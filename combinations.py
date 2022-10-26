@@ -2,7 +2,6 @@
 # creates a csv of all unique combinations to use with tribute.ipynb
 
 from itertools import combinations
-from tkinter import Y
 
 # default deck names
 deck_list = ["black", "blue", "green", "orange", "orgnum", "purple", "red", "yellow"]
