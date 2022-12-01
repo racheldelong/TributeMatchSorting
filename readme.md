@@ -8,41 +8,59 @@ __Objective:__ analyze past ToT match outcomes and return information to inform 
 
 ---
 
-## __Data__
+## __Match Suggestion Examples__
 
-Notebook runs with mock data (*mock_tribute.csv*) generated via [Mockaroo](https://mockaroo.com/).
+*Note: match suggestions are only set up for matches against other players. In matches against NPCs, players and the NPC choose two decks for their turn whether they go first or second. NPC match suggestion options will be added soon.*
 
-[Blank Google Sheets Template](https://docs.google.com/spreadsheets/d/1YQ2j1tEnVOCa40rRS8KYiVN84ltjJW523-lenTeBh_M/edit?usp=sharing) available for tracking matches. Go to File > Make a Copy to use. Sheets are set up to format cell background colors by deck name. Names and colors can be edited by selecting all columns and going to Format > Conditional Formatting.
+### __Player 1: First Deck__
 
-If using another file format, make sure the column names and contents match:
-
-![](images\columns.png)
-
-### __Columns:__
-
-- 'choice': '1' or '2' for whether you got the first or second deck choice
-
-- 'opponent': username of opposing player *(can be left blank)*
-
-- 'p1 first' - 'p1 second': decks chosen at the start of a match, in order of selection *(values used for each deck can be edited, see next section)*
-
-- 'result': uses 'W' for wins, 'L' for losses, and 'C' for conceded matches; other values will be ignored in score totals *(expected 'results' values can be edited in cell 9)*
-
-- 'notes': commentary for personal use; just avoid commas if using a csv *(can be left blank)*
-
-### __Deck names__
-
-To use different values for each deck in matches record, add your preferred label to the dictionary in cell 4 under '__Deck names used__'. For example, if you use 'duke' for the 'Duke of Crows' deck instead of 'purple' or 'crow', change:
-```
-'purple':'crow',
-```
-on line 9 to:
+- With no decks entered, the returned bar graph shows how often past matches containing each deck were won to help with first deck choice as Player 1.
 
 ```
-'duke':'crow',
+choose_deck()
 ```
 
-If you already used the values on the right side of each line ('pelin', 'psijic', etc), you shouldn't need to change anything.
+!['Player 1's first deck choice in match](images/p1_first.png)
+
+*__Best deck choice shown:__ Saint Pelin (red)*
+
+### __Player 2: Second and Third Decks__
+
+- Entering only one deck returns a bar graph with pairs of choices. Combinations with Player 1's selected deck + one of the possible remaining deck option pairs are averaged, leaving out any combinations that haven't been seen yet in a match. __Choices are ranked first by the deck pairs with the fewest untested combinations, then by the averaged win rate for each pair.__
+
+```
+choose_deck('pelin')
+```
+
+!['Player 2 deck choices'](images/p2.png)
+
+*__Best deck choice shown:__ The Reach (black) + Ansei Hunding (green)*
+
+
+### __Player 1: Fourth Deck__
+
+- After Player 1's first deck choice and the pair of decks chosen by Player 2 are entered, the bar graph shows the win rate of matches containing the selected decks plus each of the remaining choices to help select the final deck for the match.
+
+```
+choose_deck('pelin', 'reach', 'hunding')
+```
+
+!['Player 1's second deck choice / fourth deck in match'](images/p1_fourth.png)
+
+*__Best deck choice shown:__ King Orgnum (teal)*
+
+
+### __Past matches against opponent__
+
+- If it isn't your first match playing against a specific opponent, checking the choices and results of past matches might improve your chances of winning. As Player 2, it offers a better guess for what they might choose for the fourth deck (assuming they have a clear pattern). As Player 1, it can show if you've consistently won matches against them with a slightly weaked deck combination.
+
+```
+opp_prefs("abeagleyu")
+```
+
+![](images/opp.PNG)
+
+If 'abeagleyu' was player 2 in the above examples, player 1 might have been better off choosing __Grandmaster Hlaalu__ for the fourth deck instead of King Orgnum, since 'abeagleyu' lost every match with those four decks.
 
 ---
 
@@ -68,8 +86,6 @@ If you already used the values on the right side of each line ('pelin', 'psijic'
 ```
 git clone https://github.com/racheldelong/TributeMatchSorting.git
 ```
-
-
 
 2. To [create conda environment](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file), open Anaconda Prompt, change directory to TributeMatchSorting folder and enter:
 
@@ -123,60 +139,38 @@ df = pd.read_csv('examplefilename.csv')
 
 ---
 
-## __Match Suggestion Examples__
+## __Data__
 
-*Note: match suggestions are only set up for matches against other players. In matches against NPCs, players and the NPC choose two decks for their turn whether they go first or second. NPC match suggestion options will be added soon.*
+Notebook runs with mock data (*mock_tribute.csv*) generated via [Mockaroo](https://mockaroo.com/).
 
-### __Player 1: First Deck__
+[Blank Google Sheets Template](https://docs.google.com/spreadsheets/d/1YQ2j1tEnVOCa40rRS8KYiVN84ltjJW523-lenTeBh_M/edit?usp=sharing) available for tracking matches. Go to File > Make a Copy to use. Sheets are set up to format cell background colors by deck name. Names and colors can be edited by selecting all columns and going to Format > Conditional Formatting.
 
-With no decks entered, the returned bar graph shows how often past matches containing each deck were won to help with first deck choice as Player 1.
+If using another file format, make sure the column names and contents match:
+
+![](images/columns.PNG)
+
+### __Columns:__
+
+- 'choice': '1' or '2' for whether you got the first or second deck choice
+
+- 'opponent': username of opposing player *(can be left blank)*
+
+- 'p1 first' - 'p1 second': decks chosen at the start of a match, in order of selection *(values used for each deck can be edited, see next section)*
+
+- 'result': uses 'W' for wins, 'L' for losses, and 'C' for conceded matches; other values will be ignored in score totals *(expected 'results' values can be edited in cell 9)*
+
+- 'notes': commentary for personal use; just avoid commas if using a csv *(can be left blank)*
+
+#### __Deck names__
+
+To use different values for each deck in matches record, add your preferred label to the dictionary in cell 4 under '__Deck names used__'. For example, if you use 'duke' for the 'Duke of Crows' deck instead of 'purple' or 'crow', change:
+```
+'purple':'crow',
+```
+on line 9 to:
 
 ```
-choose_deck()
+'duke':'crow',
 ```
 
-!['Player 1's first deck choice in match](images/p1_first.png)
-
-*__Best deck choice shown:__ Saint Pelin (red)*
-
----
-
-### __Player 2: Second and Third Decks__
-
-Entering only one deck returns a bar graph with pairs of choices. Combinations with Player 1's selected deck + one of the possible remaining deck option pairs are averaged, leaving out any combinations that haven't been seen yet in a match. __Choices are ranked first by the deck pairs with the fewest untested combinations, then by the averaged win rate for each pair.__
-
-```
-choose_deck('pelin')
-```
-
-!['Player 2 deck choices'](images/p2.png)
-
-*__Best deck choice shown:__ The Reach (black) + Ansei Hunding (green)*
-
----
-
-### __Player 1: Fourth Deck__
-
-After Player 1's first deck choice and the pair of decks chosen by Player 2 are entered, the bar graph shows the win rate of matches containing the selected decks plus each of the remaining choices to help select the final deck for the match.
-
-```
-choose_deck('pelin', 'reach', 'hunding')
-```
-
-!['Player 1's second deck choice / fourth deck in match'](images/p1_fourth.png)
-
-*__Best deck choice shown:__ King Orgnum (teal)*
-
----
-
-### __Past matches with opponent__
-
-If it isn't your first match playing against a specific opponent, checking the choices and results of past matches might improve your chances of winning. As Player 2, it offers a better guess for what they might choose for the fourth deck (assuming they have a clear pattern). As Player 1, it can show if you've consistently won matches against them with a slightly weaked deck combination.
-
-```
-opp_prefs("abeagleyu")
-```
-
-![](images/opp.PNG)
-
-If 'abeagleyu' was player 2 in the above examples, player 1 might have been better off choosing __Grandmaster Hlaalu__ for the fourth deck instead of King Orgnum, since 'abeagleyu' lost every match with those four decks.
+If you already used the values on the right side of each line ('pelin', 'psijic', etc), you shouldn't need to change anything.
