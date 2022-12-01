@@ -16,7 +16,7 @@ Notebook runs with mock data (*mock_tribute.csv*) generated via [Mockaroo](https
 
 If using another file format, make sure the column names and contents match:
 
-!['Google Sheets'](images\columns.png)
+!['Google Sheets'](images\columns.PNG)
 
 ### __Columns:__
 
